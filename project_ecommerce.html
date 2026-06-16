@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>E-Commerce Customer Analytics | Aryan Gupta</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-family='Inter,sans-serif' font-size='44' font-weight='800' fill='white' text-anchor='middle'>AG</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #F8F9FA;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #475569;
+      --accent: #2563EB;
+      --accent-lt: #EFF6FF;
+      --amber: #F59E0B;
+      --border: #E2E8F0;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* Keyboard accessibility — visible focus ring only for keyboard users */
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    :focus:not(:focus-visible) { outline: none; }
+
+    /* NAV */
+    nav {
+      background: #1A1A2E;
+      border-top: 3px solid var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-badge { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+    .nav-logo-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+    .nav-back { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+    .nav-back:hover { color: #fff; }
+
+    /* HERO BAND */
+    .case-hero {
+      background: #1A1A2E;
+      padding: 56px 48px 48px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .case-hero-wrap {
+      background: #1A1A2E;
+      background-image: radial-gradient(ellipse at 15% 50%, rgba(37,99,235,0.18) 0%, transparent 60%), radial-gradient(ellipse at 85% 50%, rgba(37,99,235,0.18) 0%, transparent 60%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .breadcrumb { font-size: 13px; color: #64748B; margin-bottom: 20px; }
+    .breadcrumb a { color: #94a3b8; text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; }
+    .case-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag {
+      background: rgba(37,99,235,0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(37,99,235,0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .tag.amber { background: rgba(245,158,11,0.15); color: #fcd34d; border-color: rgba(245,158,11,0.3); }
+    .case-title { font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 16px; }
+    .case-subtitle { font-size: 16px; color: #94a3b8; line-height: 1.6; max-width: 680px; margin-bottom: 32px; }
+    .case-meta { display: flex; gap: 0; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; padding: 0 32px; border-left: 1px solid rgba(255,255,255,0.2); }
+    .meta-item:first-child { padding-left: 0; border-left: none; }
+    .meta-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 14px; font-weight: 600; color: #cbd5e1; }
+
+    /* BODY */
+    .case-body { max-width: 1100px; margin: 0 auto; padding: 56px 48px; }
+
+    /* STATS ROW */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 56px; }
+    .stat-card { padding: 24px 28px; text-align: left; border-left: 1px solid var(--border); }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-number { font-size: 48px; font-weight: 900; color: var(--accent); line-height: 1; letter-spacing: -2px; position: relative; padding-bottom: 14px; }
+    .stat-number::after { content: ''; position: absolute; bottom: 0; left: 0; width: 28px; height: 2px; background: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 10px; text-transform: uppercase; letter-spacing: .6px; }
+
+    /* SECTION */
+    .section { margin-bottom: 48px; }
+    .section-heading { font-size: 16px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .section-heading::before, .section-heading::after { content: ''; width: 56px; height: 2px; background: var(--accent); opacity: 0.55; border-radius: 2px; }
+    .section h2 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .section p { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
+
+    /* FINDING CARDS */
+    .findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .finding-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .finding-card .number { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+    .finding-card .amber { color: var(--amber); }
+    .finding-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+    .step-num { width: 32px; height: 32px; background: var(--accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .step-text strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .step-text span { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* RECOMMENDATION CARDS */
+    .rec-list { display: flex; flex-direction: column; gap: 12px; }
+    .rec-item { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .rec-item strong { color: var(--text); }
+
+    /* DASHBOARD */
+    .dashboard-section { background: var(--surface); border: 1.5px solid rgba(37,99,235,0.25); border-radius: 16px; overflow: hidden; margin-bottom: 48px; box-shadow: 0 4px 24px rgba(37,99,235,0.06); }
+    .dashboard-header { padding: 20px 28px; border-bottom: 1px solid #E8E0D5; background: #FAF7F4; display: flex; align-items: center; justify-content: space-between; }
+    .dashboard-header h3 { font-size: 16px; font-weight: 700; color: var(--text); }
+    .dashboard-header span { font-size: 12px; color: var(--muted); }
+    .dashboard-tabs { display: flex; gap: 0; border-bottom: 2px solid #E8E0D5; padding: 0 28px; background: #FAF7F4; }
+    .dash-tab { background: none; border: none; padding: 12px 20px; font-size: 12px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color .2s, border-color .2s; }
+    .dash-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+    .dash-tab:hover:not(.active) { color: var(--accent); }
+    .dashboard-images { position: relative; }
+    .dash-fullscreen-btn {
+      position: absolute; bottom: 10px; right: 10px;
+      width: 30px; height: 30px;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+      border: none; border-radius: 5px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0.5; transition: opacity .2s, background .2s;
+      color: #fff;
+    }
+    .dashboard-images:hover .dash-fullscreen-btn { opacity: 1; }
+    .dash-fullscreen-btn:hover { background: rgba(0,0,0,0.8); }
+    .dash-img { width: 100%; display: none; }
+    .dash-img.active { display: block; }
+    /* Lightbox */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 92vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+    .lightbox-close { position: absolute; top: 20px; right: 28px; color: #fff; font-size: 28px; cursor: pointer; opacity: 0.7; line-height: 1; background: none; border: none; }
+    .lightbox-close:hover { opacity: 1; }
+    .dash-controls { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 14px; border-top: 1px solid #E8E0D5; background: #FAF7F4; }
+    .dash-nav { background: none; border: 1px solid var(--border); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; color: var(--text); transition: background .2s, border-color .2s, color .2s; }
+    .dash-nav:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .dash-indicator { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .5px; min-width: 36px; text-align: center; }
+    .dashboard-placeholder small { font-size: 13px; color: #94a3b8; }
+
+    /* CTA */
+    .case-cta { background: #1A1A2E; border-radius: 20px; padding: 48px; text-align: center; }
+    .case-cta h3 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .case-cta p { font-size: 15px; color: #94a3b8; margin-bottom: 28px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--accent); color: #fff; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-block; transition: background .2s; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-ghost { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.35); padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-block; transition: all .2s; }
+    .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.6); }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
+    .dash-video-placeholder { height: 420px; background: linear-gradient(135deg, #EFF6FF, #F8F9FA); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; }
+    .dash-video-placeholder.active { display: flex; }
+    .dash-video-placeholder p { font-size: 15px; color: var(--muted); font-weight: 500; }
+
+    /* ───────── RESPONSIVE ───────── */
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-card:nth-child(odd) { border-left: none; padding-left: 0; }
+      .case-meta { flex-direction: column; gap: 16px; }
+      .meta-item { padding: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+      .meta-item:first-child { border-top: none; padding-top: 0; }
+    }
+    @media (max-width: 760px) {
+      body { overflow-x: hidden; }
+      nav { padding: 0 20px; }
+      .case-hero-wrap { overflow: hidden; }
+      .case-hero { padding: 40px 20px 36px; }
+      .case-title { font-size: 24px; }
+      .case-subtitle { font-size: 14px; }
+      .case-tags { flex-wrap: wrap; gap: 8px; }
+      .case-body { padding: 40px 20px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 40px; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .section h2 { font-size: 20px; }
+      .dashboard-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .dash-tab { white-space: nowrap; }
+      .dash-fullscreen-btn { width: 40px; height: 40px; opacity: 0.85; bottom: 12px; right: 12px; }
+      .case-cta { padding: 36px 22px; }
+      .case-cta h3 { font-size: 21px; }
+      .cta-btns { flex-direction: column; }
+      .btn-primary, .btn-ghost { text-align: center; }
+    }
+    @media (max-width: 420px) {
+      .stat-number { font-size: 23px; }
+      .nav-logo-name { font-size: 15px; }
+      .nav-back { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-badge">AG</div>
+      <div class="nav-logo-name">Aryan Gupta</div>
+    </a>
+    <a href="/" class="nav-back">← Back to Portfolio</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="case-hero-wrap">
+    <div class="case-hero">
+      <div class="breadcrumb"><a href="/">Portfolio</a> / Case Study</div>
+      <div class="case-tags">
+        <span class="tag">SQL</span>
+        <span class="tag">Python</span>
+        <span class="tag">Power BI</span>
+        <span class="tag amber">E-Commerce</span>
+      </div>
+      <h1 class="case-title">E-Commerce Customer Analytics<br>Cohort Retention & RFM Segmentation</h1>
+      <p class="case-subtitle">An e-commerce company suspected customer loss but lacked visibility into behavioral patterns. This analysis identified why customers weren't returning and which segments needed intervention.</p>
+      <div class="case-meta">
+        <div class="meta-item">
+          <span class="meta-label">Dataset</span>
+          <span class="meta-value">Online Retail II, UCI</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Date Range</span>
+          <span class="meta-value">Dec 2009 – Dec 2011</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Rows Analysed</span>
+          <span class="meta-value">779,425</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · SQL · Power BI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="case-body">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number">779K</div>
+        <div class="stat-label">Transactions analysed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5,878</div>
+        <div class="stat-label">Customers segmented</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">7</div>
+        <div class="stat-label">RFM segments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">25</div>
+        <div class="stat-label">Monthly cohorts tracked</div>
+      </div>
+    </div>
+
+    <!-- PROBLEM -->
+    <div class="section">
+      <div class="section-heading">The Problem</div>
+      <h2>Why aren't customers coming back?</h2>
+      <p>The business had growing transaction volumes but couldn't explain why revenue felt stagnant. No visibility into which customers were churning, which were worth saving, and which had already gone silent. Without answers, every marketing decision was a guess.</p>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- METHODOLOGY -->
+    <div class="section">
+      <div class="section-heading">Methodology</div>
+      <h2>How the analysis was structured</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Data Consolidation & Cleaning</strong>
+            <span>Merged two Excel sheets (1,067,371 rows) into a single DataFrame. Removed nulls, cancellations, negative quantities, and duplicates, resulting in 779,425 clean rows.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>Feature Engineering</strong>
+            <span>Derived Total Price, Cohort Month, and Cohort Index columns to enable time-based retention tracking.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>Cohort Retention Analysis</strong>
+            <span>Built a 25-month cohort heatmap showing what percentage of each acquisition cohort returned in subsequent months.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <strong>RFM Segmentation</strong>
+            <span>Scored all 5,878 customers on Recency, Frequency, and Monetary value. Grouped into 7 actionable segments: Champions, Loyal, At-Risk, Lost, and more.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-text">
+            <strong>SQL Deep-Dive</strong>
+            <span>Ran 4 targeted SQL queries using aggregations, JOINs, CTEs, and window functions to validate Python findings and surface additional patterns.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-text">
+            <strong>Power BI Dashboard</strong>
+            <span>Built a 3-page interactive dashboard for stakeholders: retention heatmap, RFM segment breakdown, and revenue by geography.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- FINDINGS -->
+    <div class="section">
+      <div class="section-heading">Key Findings</div>
+      <h2>What the data revealed</h2>
+      <div class="findings-grid">
+        <div class="finding-card">
+          <div class="number">50%+</div>
+          <p>Of customers never make a second purchase. First-to-second purchase conversion is the single biggest revenue leak in the business.</p>
+        </div>
+        <div class="finding-card">
+          <div class="number amber">1,551</div>
+          <p>At-Risk customers with the highest average revenue (£6,271), the most valuable and most urgent segment to re-engage.</p>
+        </div>
+        <div class="finding-card">
+          <div class="number">82%</div>
+          <p>Of total revenue comes from the UK alone, revealing heavy geographic concentration and untapped potential in other markets.</p>
+        </div>
+        <div class="finding-card">
+          <div class="number amber">Dec</div>
+          <p>Cohorts show anomalous 12-month retention spikes, suggesting seasonal buyers who return annually rather than becoming regular customers.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- DASHBOARD -->
+    <div class="section">
+      <div class="section-heading">Dashboard</div>
+      <h2>Power BI Report</h2>
+      <p>The 3-page dashboard covers cohort retention heatmap, RFM segment distribution, and revenue by country.</p>
+    </div>
+    <div class="dashboard-section">
+      <div class="dashboard-header">
+        <h3>E-Commerce Customer Analytics Dashboard</h3>
+        <span>Power BI · 3 pages</span>
+      </div>
+      <div class="dashboard-tabs">
+        <button class="dash-tab active" onclick="showTab(0)">Overview</button>
+        <button class="dash-tab" onclick="showTab(1)">Cohort Analysis</button>
+        <button class="dash-tab" onclick="showTab(2)">Customer Segmentation</button>
+      </div>
+      <div class="dashboard-images">
+        <img class="dash-img active" src="/ecommerce-p1.png" alt="Sales Overview dashboard page" loading="lazy" decoding="async"/>
+        <img class="dash-img" src="/ecommerce-p2.png" alt="Cohort Analysis dashboard page" loading="lazy" decoding="async"/>
+        <img class="dash-img" src="/ecommerce-p3.png" alt="Customer Segmentation dashboard page" loading="lazy" decoding="async"/>
+        <button class="dash-fullscreen-btn" onclick="openLightbox()" title="Fullscreen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="dash-controls">
+        <button class="dash-nav dash-prev" onclick="stepTab(-1)">&#8249;</button>
+        <span class="dash-indicator" id="dash-indicator">1 / 3</span>
+        <button class="dash-nav dash-next" onclick="stepTab(1)">&#8250;</button>
+      </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+      <img id="lightbox-img" src="" alt="Dashboard fullscreen"/>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="section">
+      <div class="section-heading">Recommendations</div>
+      <h2>What the business should do next</h2>
+      <div class="rec-list">
+        <div class="rec-item"><strong>Fix first-purchase retention first.</strong> More than half of customers leave after one order. A targeted second-purchase campaign (discount or follow-up email within 30 days) would have the highest ROI of any initiative.</div>
+        <div class="rec-item"><strong>Re-engage the At-Risk segment immediately.</strong> 1,551 customers averaging £6,271 revenue are showing early churn signals. Personalized win-back outreach before they go cold is critical.</div>
+        <div class="rec-item"><strong>Treat December as a separate customer cohort.</strong> Seasonal buyers behave differently; measure them on annual retention, not monthly, and design campaigns accordingly.</div>
+        <div class="rec-item"><strong>Diversify geographic revenue.</strong> 82% UK concentration is a business risk. International growth campaigns targeted at the next-largest markets should be a strategic priority.</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="case-cta">
+      <h3>Want to see the code and data?</h3>
+      <p>Full Jupyter notebooks, SQL scripts, and Power BI file available on GitHub.</p>
+      <div class="cta-btns">
+        <a href="/" class="btn-ghost">← Back to Portfolio</a>
+        <a href="https://github.com/AryanGit11/Ecommerce-Customer-Analytics" target="_blank" class="btn-primary">View on GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentTab = 0;
+    const totalTabs = document.querySelectorAll('.dash-tab').length;
+
+    function showTab(index) {
+      currentTab = index;
+      document.querySelectorAll('.dash-tab').forEach((t, i) => t.classList.toggle('active', i === index));
+      document.querySelectorAll('.dash-img').forEach((img, i) => img.classList.toggle('active', i === index));
+document.getElementById('dash-indicator').textContent = (index + 1) + ' / ' + totalTabs;
+    }
+
+    function stepTab(dir) {
+      showTab((currentTab + dir + totalTabs) % totalTabs);
+    }
+
+    function openLightbox() {
+      const src = document.querySelector('.dash-img.active').src;
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('lightbox').classList.contains('open')) {
+        if (e.key === 'Escape') closeLightbox();
+      } else {
+        if (e.key === 'ArrowRight') stepTab(1);
+        if (e.key === 'ArrowLeft') stepTab(-1);
+      }
+    });
+  </script>
+</body>
+</html>
